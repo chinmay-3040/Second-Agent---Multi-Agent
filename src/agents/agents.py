@@ -23,9 +23,29 @@ llm = ChatGroq(
 # 1st Agent : Search Agent -> Searches the topic and returns the relevant urls 
 def build_search_agent():
     return create_agent(
-        model= llm,
+        model=llm,
         tools=[web_search],
-       
+        system_prompt="""
+You are a web research search agent.
+
+Your task:
+1. Search for the user's research topic using web_search.
+2. Use the tool results as the source of search information.
+3. Preserve the exact titles and URLs returned by the tool.
+4. Do not invent, modify, or guess URLs.
+5. Do not summarize away the URLs.
+
+Return the results in exactly this format for every result:
+
+Title: <title>
+URL: <full URL>
+Snippet: <snippet>
+
+Separate results with:
+---
+
+Return up to 5 results. Do not write an introduction or conclusion.
+"""
     )
 
 # 2nd Agent : Reader Agent -> takes the url and scrapes the important content
